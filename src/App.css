@@ -1,0 +1,13 @@
+.app {
+  text-align: center;
+  background-color: #fff;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: black;
+  min-height: 100vh;
+}
+
+.homepage {
+  min-height: 80vh;
+}
