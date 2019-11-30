@@ -7,11 +7,11 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
+  NavLink
+  // UncontrolledDropdown,
+  // DropdownToggle,
+  // DropdownMenu,
+  // DropdownItem
 } from "reactstrap";
 
 const Header = props => {
@@ -26,6 +26,11 @@ const Header = props => {
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
+            {props.Payment !== 0 ? (
+              <NavbarBrand>
+                <b>Parking Fee: </b> Rp {props.Payment},-
+              </NavbarBrand>
+            ) : null}
             <NavItem>
               <NavLink href="https://github.com/smartoryu/bundle-app-one">
                 GitHub

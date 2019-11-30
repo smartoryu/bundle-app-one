@@ -11,7 +11,7 @@ class Parking extends Component {
   };
 
   clickEnter = type => {
-    console.log(type);
+    console.log("state vehicle: " + type);
     type === "car"
       ? this.setState({ vehicle: "car", fee: 2000 })
       : this.setState({ vehicle: "motorcycle", fee: 1000 });
@@ -23,7 +23,7 @@ class Parking extends Component {
     const { vehicle } = this.state;
     Swal.fire({
       title: `Parking ${vehicle} for ${this.props.Duration} hour${
-        this.props.Duration > 1 ? "(s)" : ""
+        this.props.Duration > 1 ? "s" : ""
       }\n(Rp ${this.props.Payment})`,
       text: "Confirm payment?",
       showCancelButton: true,
@@ -36,13 +36,22 @@ class Parking extends Component {
         this.props.parkingTime(0);
         this.setState({ clicked: 0 });
         this.renderParkingCalc();
+
+        Swal.mixin({
+          toast: true,
+          position: "center",
+          showConfirmButton: false,
+          timer: 1500,
+          // timerProgressBar: true,
+          onOpen: toast => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          }
+        }).fire({
+          text: "Your payment has been confirmed.",
+          icon: "success"
+        });
       }
-      Swal.fire({
-        text: "Your payment has been confirmed.",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 1200
-      });
     });
   }
 
@@ -65,8 +74,12 @@ class Parking extends Component {
     if (this.state.clicked === 0) {
       return <p></p>;
     } else {
-      console.log("state Payment: " + this.props.Payment);
-      console.log("state Duration: " + this.props.Duration);
+      console.log("state Payment: Rp " + this.props.Payment);
+      console.log(
+        "state Duration: " +
+          this.props.Duration +
+          `hr ${this.props.Duration > 1 ? "s" : ""}`
+      );
       return (
         <div>
           <center>
@@ -83,7 +96,7 @@ class Parking extends Component {
           </center>
           <p className="mt-4">
             <span className="font-weight-bold">Parking Fee: </span>
-            Rp {this.props.Payment},00
+            Rp {this.props.Payment},-
           </p>
           <input
             type="button"
@@ -103,7 +116,7 @@ class Parking extends Component {
             style={{ position: "absolute", bottom: "0", right: "0", left: "0" }}
           >
             <p>
-              *{this.state.vehicle}'s parking fee: {this.state.fee}/hour
+              *{this.state.vehicle}'s parking fee: Rp {this.state.fee},-/hour
             </p>
           </div>
         </div>
