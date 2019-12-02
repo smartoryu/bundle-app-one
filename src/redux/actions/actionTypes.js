@@ -1,0 +1,2 @@
+const PAY_PARKING = "PAY_PARKING";
+const WORD_COUNT = "WORD_COUNT";

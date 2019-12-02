@@ -7,11 +7,11 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
-  NavLink
-  // UncontrolledDropdown,
-  // DropdownToggle,
-  // DropdownMenu,
-  // DropdownItem
+  NavLink,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
 } from "reactstrap";
 
 const Header = props => {
@@ -22,31 +22,39 @@ const Header = props => {
   return (
     <div>
       <Navbar color="dark" dark expand="md">
-        <NavbarBrand href="/">Parking-app</NavbarBrand>
+        <NavbarBrand href="/">Welcome Aboard!</NavbarBrand>
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
-            {props.Payment !== 0 ? (
+            {/* Header Parking-app */}
+            {props.Payment > 0 ? (
               <NavbarBrand>
                 <b>Parking Fee: </b> Rp {props.Payment},-
               </NavbarBrand>
             ) : null}
+
+            {/* Header Counting-word */}
+            {props.Count > 0 ? (
+              <NavbarBrand>
+                {props.Count} <b>word{props.Count > 1 ? "s" : ""}</b>
+              </NavbarBrand>
+            ) : null}
+
+            <UncontrolledDropdown nav inNavbar>
+              <DropdownToggle nav caret>
+                Apps
+              </DropdownToggle>
+              <DropdownMenu right>
+                <DropdownItem href="/parking-app">Parking-app</DropdownItem>
+                <DropdownItem href="/counter-word">Word Counter</DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
+
             <NavItem>
               <NavLink href="https://github.com/smartoryu/bundle-app-one">
                 GitHub
               </NavLink>
             </NavItem>
-            {/* <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle nav caret>
-                Options
-              </DropdownToggle>
-              <DropdownMenu right>
-                <DropdownItem>Option 1</DropdownItem>
-                <DropdownItem>Option 2</DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem>Reset</DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown> */}
           </Nav>
         </Collapse>
       </Navbar>
@@ -56,8 +64,9 @@ const Header = props => {
 
 const mapStateToProps = state => {
   return {
-    Payment: state.payment.parkingFee,
-    Duration: state.duration.parkingDuration
+    Duration: state.parkingApp.duration,
+    Payment: state.parkingApp.total,
+    Count: state.wordCounterApp.count
   };
 };
 

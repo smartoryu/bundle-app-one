@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
-import duration from "./parkingDuration";
-import payment from "./parkingPayment";
+import parkingApp from "./parkingReducers";
+import wordCounterApp from "./wordReducers";
 
 export default combineReducers({
-  duration,
-  payment
+  parkingApp,
+  wordCounterApp
 });

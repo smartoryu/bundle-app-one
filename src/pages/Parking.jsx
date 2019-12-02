@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Swal from "sweetalert2";
 import { connect } from "react-redux";
-import { parkingPayment, parkingTime } from "../redux/actions";
+import { paymentPark } from "../redux/actions";
 
 class Parking extends Component {
   state = {
@@ -10,21 +10,28 @@ class Parking extends Component {
     fee: 0
   };
 
+  componentDidMount() {
+    document.title = "Parking-app";
+  }
+
   clickEnter = type => {
     console.log("state vehicle: " + type);
     type === "car"
       ? this.setState({ vehicle: "car", fee: 2000 })
       : this.setState({ vehicle: "motorcycle", fee: 1000 });
+
     this.setState({ clicked: 1 });
     this.renderParkingCalc();
+    this.props.paymentPark(0, 0);
   };
 
   clickClose() {
     const { vehicle } = this.state;
+
     Swal.fire({
-      title: `Parking ${vehicle} for ${this.props.Duration} hour${
-        this.props.Duration > 1 ? "s" : ""
-      }\n(Rp ${this.props.Payment})`,
+      title: `Parking ${vehicle} for ${this.props.parkDuration} hour${
+        this.props.parkDuration > 1 ? "s" : ""
+      }\n(Rp ${this.props.parkPayment})`,
       text: "Confirm payment?",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -32,8 +39,7 @@ class Parking extends Component {
       confirmButtonText: "Confirm"
     }).then(result => {
       if (result.value) {
-        this.props.parkingPayment(0);
-        this.props.parkingTime(0);
+        this.props.paymentPark(0, 0);
         this.setState({ clicked: 0 });
         this.renderParkingCalc();
 
@@ -42,7 +48,6 @@ class Parking extends Component {
           position: "center",
           showConfirmButton: false,
           timer: 1500,
-          // timerProgressBar: true,
           onOpen: toast => {
             toast.addEventListener("mouseenter", Swal.stopTimer);
             toast.addEventListener("mouseleave", Swal.resumeTimer);
@@ -56,29 +61,29 @@ class Parking extends Component {
   }
 
   clickReset = () => {
-    this.props.parkingPayment(0);
-    this.props.parkingTime(0);
+    this.props.paymentPark(0, 0);
+    this.refs.parking.value = "";
     this.setState({ clicked: 0 });
     this.renderParkingCalc();
   };
 
   btnPayment = (cash = 0) => {
     var time = this.refs.parking.value;
-    this.state.vehicle === "car" ? (cash = time * 2000) : (cash = time * 1000);
 
-    this.props.parkingPayment(cash);
-    this.props.parkingTime(time);
+    this.state.vehicle === "car"
+      ? this.props.paymentPark("car", time)
+      : this.props.paymentPark("motorcycle", time);
   };
 
   renderParkingCalc = () => {
     if (this.state.clicked === 0) {
       return <p></p>;
     } else {
-      console.log("state Payment: Rp " + this.props.Payment);
+      console.log("state Payment: Rp " + this.props.parkPayment);
       console.log(
         "state Duration: " +
-          this.props.Duration +
-          `hr ${this.props.Duration > 1 ? "s" : ""}`
+          this.props.parkDuration +
+          `hr ${this.props.parkDuration > 1 ? "s" : ""}`
       );
       return (
         <div>
@@ -96,7 +101,7 @@ class Parking extends Component {
           </center>
           <p className="mt-4">
             <span className="font-weight-bold">Parking Fee: </span>
-            Rp {this.props.Payment},-
+            Rp {this.props.parkPayment},-
           </p>
           <input
             type="button"
@@ -127,7 +132,7 @@ class Parking extends Component {
   render() {
     return (
       <div>
-        <div className="mx-auto mb-5">
+        <div className="mx-auto mt-5 mb-5">
           <h1>Parking</h1>
           <input
             type="button"
@@ -148,15 +153,11 @@ class Parking extends Component {
     );
   }
 }
-
 const mapStateToProps = state => {
   return {
-    Payment: state.payment.parkingFee,
-    Duration: state.duration.parkingDuration
+    parkDuration: state.parkingApp.duration,
+    parkPayment: state.parkingApp.total
   };
 };
 
-export default connect(mapStateToProps, {
-  parkingPayment,
-  parkingTime
-})(Parking);
+export default connect(mapStateToProps, { paymentPark })(Parking);

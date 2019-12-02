@@ -1,21 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
-import "bootstrap/dist/css/bootstrap.min.css";
 import * as serviceWorker from "./serviceWorker";
-import { BrowserRouter } from "react-router-dom";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
 import Reducer from "./redux/reducers";
+import "./index.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import App from "./App";
 
 const vault = createStore(Reducer);
 
 ReactDOM.render(
   <Provider store={vault}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <App />
   </Provider>,
   document.getElementById("root")
 );
