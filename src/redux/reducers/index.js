@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
-import parkingApp from "./parkingReducers";
-import wordCounterApp from "./wordReducers";
+import parkingState from "./parkingReducers";
+import wordCounterState from "./wordReducers";
 
 export default combineReducers({
-  parkingApp,
-  wordCounterApp
+  parkingState,
+  wordCounterState
 });

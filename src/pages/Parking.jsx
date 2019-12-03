@@ -5,29 +5,52 @@ import { paymentPark } from "../redux/actions";
 
 class Parking extends Component {
   state = {
-    clicked: 0,
+    clicked: 0, // state untuk membuka renderParkingCalc
     vehicle: "",
-    fee: 0
+    fee: 0 // state untuk keterangan harga di bawah halaman
   };
 
+  // Mengganti title website
   componentDidMount() {
     document.title = "Parking-app";
   }
 
+  // Function untuk Btn memilih CAR atau MOTORCYCLE
   clickEnter = type => {
     console.log("state vehicle: " + type);
     type === "car"
-      ? this.setState({ vehicle: "car", fee: 2000 })
-      : this.setState({ vehicle: "motorcycle", fee: 1000 });
+      ? // update state untuk mode CAR
+        this.setState({ vehicle: "car", fee: 2000 })
+      : // update state untuk mode MOTORCYCLE
+        this.setState({ vehicle: "motorcycle", fee: 1000 });
 
+    // untuk membuka menu parkir sesuai isi state
     this.setState({ clicked: 1 });
+
+    // menjalankan menu parkir
     this.renderParkingCalc();
+
+    // me-reset menu parkir sebelumnya
     this.props.paymentPark(0, 0);
   };
 
-  clickClose() {
+  // function untuk menjalankan onChange di input renderParkingCalc()
+  btnPayment = (cash = 0) => {
+    // variabel yg menyimpan value yang diisi pada input
+    var time = this.refs.parking.value;
+
+    // If ternary yan
+    this.state.vehicle === "car"
+      ? this.props.paymentPark("car", time)
+      : this.props.paymentPark("motorcycle", time);
+  };
+
+  // Button untuk melakukan pembayaran
+  clickPay() {
+    // Destructuring vehicle dalam state biar lebih ringkas
     const { vehicle } = this.state;
 
+    // Menjalankan SweetAlert confirmation
     Swal.fire({
       title: `Parking ${vehicle} for ${this.props.parkDuration} hour${
         this.props.parkDuration > 1 ? "s" : ""
@@ -38,11 +61,8 @@ class Parking extends Component {
       cancelButtonColor: "#d33",
       confirmButtonText: "Confirm"
     }).then(result => {
+      // Kalau klik confirmed, akan menjalankan SweetAlert
       if (result.value) {
-        this.props.paymentPark(0, 0);
-        this.setState({ clicked: 0 });
-        this.renderParkingCalc();
-
         Swal.mixin({
           toast: true,
           position: "center",
@@ -56,10 +76,18 @@ class Parking extends Component {
           text: "Your payment has been confirmed.",
           icon: "success"
         });
+
+        // setelah menjalankan SweetAlert, seluruh state di reset
+        this.props.paymentPark(0, 0);
+        this.setState({ clicked: 0 });
+
+        // kemudian menjalankan render kembali dengan INITIAL_STATE
+        this.renderParkingCalc();
       }
     });
   }
 
+  // Button reset
   clickReset = () => {
     this.props.paymentPark(0, 0);
     this.refs.parking.value = "";
@@ -67,14 +95,7 @@ class Parking extends Component {
     this.renderParkingCalc();
   };
 
-  btnPayment = (cash = 0) => {
-    var time = this.refs.parking.value;
-
-    this.state.vehicle === "car"
-      ? this.props.paymentPark("car", time)
-      : this.props.paymentPark("motorcycle", time);
-  };
-
+  // Render menu parkir
   renderParkingCalc = () => {
     if (this.state.clicked === 0) {
       return <p></p>;
@@ -91,7 +112,7 @@ class Parking extends Component {
             <p className="font-weight-bold mr-5 pr-3">
               Parking duration
               <input
-                onChange={this.btnPayment}
+                onChange={this.btnPayment} // ===> lokasi function
                 ref="parking"
                 type="number"
                 className="mx-2"
@@ -107,7 +128,7 @@ class Parking extends Component {
             type="button"
             className="btn btn-warning"
             value="PAY"
-            onClick={() => this.clickClose(this.state.clicked)}
+            onClick={() => this.clickPay(this.state.clicked)}
           />
           <div>
             <input
@@ -152,11 +173,20 @@ class Parking extends Component {
       </div>
     );
   }
+  s;
 }
+
+/* ==== untuk memanggil reducer
+        agar bisa digunakan di dalam Parking.jsx ==== */
 const mapStateToProps = state => {
   return {
-    parkDuration: state.parkingApp.duration,
-    parkPayment: state.parkingApp.total
+    /* ==== menggunakan value dalam properti duration milik objek
+            parkingState di file parkingReducers.js */
+    parkDuration: state.parkingState.duration,
+
+    /* ==== menggunakan value dalam properti total milik objek 
+            parkingState di file parkingReducers.js */
+    parkPayment: state.parkingState.total
   };
 };
 

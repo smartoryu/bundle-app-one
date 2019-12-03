@@ -64,9 +64,9 @@ const Header = props => {
 
 const mapStateToProps = state => {
   return {
-    Duration: state.parkingApp.duration,
-    Payment: state.parkingApp.total,
-    Count: state.wordCounterApp.count
+    Duration: state.parkingState.duration,
+    Payment: state.parkingState.total,
+    Count: state.wordCounterState.count
   };
 };
 

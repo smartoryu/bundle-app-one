@@ -1,21 +1,21 @@
 import PAY_PARKING from "../actions/actionTypes";
 
 const INITIAL_STATE = {
-  parking: {
+  parkingState: {
     duration: 0,
     total: 0
   }
 };
 
-export default (parking = INITIAL_STATE, action) => {
+export default (parkingState = INITIAL_STATE, action) => {
   switch (action.type) {
     case PAY_PARKING:
       var newObj = {
         duration: action.duration,
         total: action.total
       };
-      return { ...parking, ...newObj };
+      return { ...parkingState, ...newObj };
     default:
-      return parking;
+      return parkingState;
   }
 };

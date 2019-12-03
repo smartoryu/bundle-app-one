@@ -3,16 +3,19 @@ import { connect } from "react-redux";
 import { wordCounter } from "../redux/actions";
 
 class CounterWord extends Component {
+  // Mengganti title website
   componentDidMount() {
     document.title = "Counter-word";
   }
 
+  // function untuk menjalankan onChange di input render()
   wordCounter = () => {
     var words = this.refs.words.value;
     var count = words.split(" ").filter(word => word.length > 0).length;
     this.props.wordCounter(words, count);
   };
 
+  // function untuk button reset
   wordCounterReset = () => {
     this.props.wordCounter(0, 0);
     this.refs.words.value = "";
@@ -25,7 +28,7 @@ class CounterWord extends Component {
           <center>
             <p className="font-weight-bold mx-auto"> Text Area</p>
             <input
-              onChange={this.wordCounter}
+              onChange={this.wordCounter} // ===> lokasi function
               ref="words"
               type="text"
               style={{ width: "50%" }}
@@ -47,8 +50,8 @@ class CounterWord extends Component {
 
 const mapStateToProps = state => {
   return {
-    word: state.wordCounterApp.word,
-    wordCount: state.wordCounterApp.count
+    word: state.wordCounterState.word,
+    wordCount: state.wordCounterState.count
   };
 };
 
