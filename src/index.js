@@ -4,6 +4,7 @@ import * as serviceWorker from "./serviceWorker";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
 import Reducer from "./redux/reducers";
+import { BrowserRouter as Router } from "react-router-dom";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import App from "./App";
@@ -12,7 +13,9 @@ const vault = createStore(Reducer);
 
 ReactDOM.render(
   <Provider store={vault}>
-    <App />
+    <Router>
+      <App />
+    </Router>
   </Provider>,
   document.getElementById("root")
 );
